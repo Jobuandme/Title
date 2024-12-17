@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrolling Title</title>
+    <style>
+        body {
+            margin: 0;
+            height: 800vh; /* Makes the page scrollable */
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            font-size: 48px;
+            transition: font-size 0.1s ease, top 0.3s ease;
+        }
+        .fixed-header {
+            font-size: 24px !important;
+            top: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Scroll Me</h1>
+    <script>
+        let lastScrollY = window.scrollY;
+        const title = document.getElementById('title');
+        const minSize = 20, maxSize = 500;
+        const fixedPoint = window.innerHeight * 2; // 200vh in pixels
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            let fontSize = parseInt(window.getComputedStyle(title).fontSize);
+
+            if (currentScrollY >= fixedPoint) {
+                title.classList.add('fixed-header');
+            } else {
+                title.classList.remove('fixed-header');
+                if (currentScrollY > lastScrollY) { // Scrolling down
+                    fontSize = Math.max(minSize, fontSize - 2);
+                } else { // Scrolling up
+                    fontSize = Math.min(maxSize, fontSize + 2);
+                }
+                title.style.fontSize = fontSize + 'px';
+            }
+
+            lastScrollY = currentScrollY;
+        });
+    </script>
+</body>
+</html>
