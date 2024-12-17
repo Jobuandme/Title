@@ -10,46 +10,59 @@
             height: 800vh; /* Makes the page scrollable */
             font-family: Arial, sans-serif;
         }
-        h1 {
+
+        .title-container {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            margin: 0;
-            font-size: 48px;
-            transition: font-size 0.1s ease, top 0.3s ease;
+            width: 90%; /* Start at 90% width */
+            max-width: 90%; /* Max width for the dynamic container */
+            text-align: center;
+            transition: width 0.3s ease, top 0.3s ease;
         }
+
+        h1 {
+            margin: 0;
+            font-size: 10vw; /* Start with large size relative to viewport */
+            white-space: nowrap; /* Prevent line breaks */
+            transition: font-size 0.3s ease;
+        }
+
         .fixed-header {
-            font-size: 24px !important;
+            width: 300px !important; /* Fixed width of title-container */
+            max-width: none !important; /* Remove max-width constraint */
             top: 0 !important;
+        }
+
+        .fixed-header h1 {
+            font-size: 3vw !important; /* Shrink font size when fixed */
         }
     </style>
 </head>
 <body>
-    <h1 id="title">Scroll Me</h1>
+    <div class="title-container" id="title-container">
+        <h1 id="title">Michael Gvozdek</h1>
+    </div>
+
     <script>
-        let lastScrollY = window.scrollY;
+        const titleContainer = document.getElementById('title-container');
         const title = document.getElementById('title');
-        const minSize = 20, maxSize = 500;
         const fixedPoint = window.innerHeight * 2; // 200vh in pixels
 
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
-            let fontSize = parseInt(window.getComputedStyle(title).fontSize);
 
             if (currentScrollY >= fixedPoint) {
-                title.classList.add('fixed-header');
+                titleContainer.classList.add('fixed-header');
             } else {
-                title.classList.remove('fixed-header');
-                if (currentScrollY > lastScrollY) { // Scrolling down
-                    fontSize = Math.max(minSize, fontSize - 2);
-                } else { // Scrolling up
-                    fontSize = Math.min(maxSize, fontSize + 2);
-                }
-                title.style.fontSize = fontSize + 'px';
-            }
+                titleContainer.classList.remove('fixed-header');
 
-            lastScrollY = currentScrollY;
+                const scrollFraction = Math.min(currentScrollY / fixedPoint, 1);
+                const dynamicFontSize = 10 - (scrollFraction * 7); // Shrink font size from 10vw to 3vw
+
+                title.style.fontSize = dynamicFontSize + 'vw';
+            }
         });
     </script>
 </body>
